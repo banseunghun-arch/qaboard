@@ -1,30 +1,17 @@
-import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/common/PageLayout';
 import { QuestionCard } from '../components/common/QuestionCard';
 import { UnauthorizedState } from '../components/common/UnauthorizedState';
 import { EmptyState } from '../components/common/EmptyState';
-import { Button } from '../components/common/Button';
-import { Textarea } from '../components/common/Textarea';
 import { useAuth } from '../hooks/useAuth';
 import { MOCK_QUESTIONS, MOCK_ANSWERS } from '../utils/mock-data';
-import type { Question } from '../types/models';
 
 export default function QuestionDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, role } = useAuth();
-  let question = MOCK_QUESTIONS.find((q) => q.id === id);
-  let answer = MOCK_ANSWERS.find((a) => a.question_id === id);
-
-  const [isEditingQuestion, setIsEditingQuestion] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(question?.title || '');
-  const [editedContent, setEditedContent] = useState(question?.content || '');
-  const [editErrors, setEditErrors] = useState<{ title?: string; content?: string }>({});
-
-  const [isEditingAnswer, setIsEditingAnswer] = useState(!answer);
-  const [answerContent, setAnswerContent] = useState(answer?.content || '');
-  const [answerError, setAnswerError] = useState<string>('');
+  const question = MOCK_QUESTIONS.find((q) => q.id === id);
+  const answer = MOCK_ANSWERS.find((a) => a.question_id === id);
 
   if (!user) {
     return (
