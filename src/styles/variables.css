@@ -1,0 +1,103 @@
+:root {
+  /* 색상 - Primary */
+  --color-primary-navy: #0d47a1;
+  --color-primary-violet: #7c4dff;
+  --color-primary-blue: #0277bd;
+
+  /* 색상 - Status */
+  --color-status-pending: #ff9800;
+  --color-status-pending-bg: #fff3e0;
+  --color-status-completed: #4caf50;
+  --color-status-completed-bg: #e8f5e9;
+  --color-status-closed: #9ca3af;
+  --color-status-closed-bg: #f5f5f5;
+  --color-status-error: #ef4444;
+  --color-status-error-bg: #fef2f2;
+  --color-status-error-dark: #dc2626;
+  --color-status-info: #2196f3;
+  --color-status-info-bg: #f0f9ff;
+  --color-status-warning: #f59e0b;
+
+  /* 색상 - Neutral */
+  --color-text-primary: #1f2937;
+  --color-text-body: #4b5563;
+  --color-text-secondary: #616161;
+  --color-text-disabled: #9ca3af;
+
+  --color-bg-page: #f8fafc;
+  --color-bg-card: #ffffff;
+  --color-border: #e5e7eb;
+
+  /* 타이포그래피 */
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-size-hero-title: 48px;
+  --font-size-page-title: 28px;
+  --font-size-card-title: 24px;
+  --font-size-section-title: 18px;
+  --font-size-body: 14px;
+  --font-size-body-lg: 16px;
+  --font-size-label: 13px;
+  --font-size-caption: 12px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-title: 1.2;
+  --line-height-body: 1.6;
+  --line-height-relaxed: 1.8;
+
+  /* 간격 (Spacing Scale) */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 48px;
+
+  /* 컴포넌트 */
+  --button-height: 44px;
+  --button-padding: 12px 28px;
+  --input-height: 44px;
+  --input-padding: 12px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+
+  /* 그림자 */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+  /* Gradient */
+  --gradient-aurora: linear-gradient(135deg, var(--color-primary-navy) 0%, var(--color-primary-violet) 50%, var(--color-primary-blue) 100%);
+
+  /* Component Sizing */
+  --size-icon-badge: 60px;
+  --size-logo: 36px;
+
+  /* Breakpoints & Max Width */
+  --max-content-width: 1200px;
+  --max-detail-width: 800px;
+
+  /* 반응형 Padding */
+  --padding-h: 48px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --font-size-hero-title: 32px;
+    --font-size-page-title: 24px;
+    --padding-h: 16px;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --font-size-hero-title: 40px;
+    --padding-h: 32px;
+  }
+}
