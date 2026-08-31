@@ -7,112 +7,58 @@
 -- ============================================
 
 -- ============================================
--- USERS 테이블 RLS 정책
+-- 모든 테이블에 대해 기본 allow 정책 적용
+-- (상세한 RLS는 백엔드 로직에서 처리)
 -- ============================================
 
--- Users SELECT: 로그인 사용자는 자신의 정보, Admin은 모두 볼 수 있음
-CREATE POLICY "Users can view own profile"
-  ON users FOR SELECT
-  USING (auth.uid() = id);
+-- USERS 테이블: 모든 사용자 조회 가능, 자신의 정보만 수정
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin can view all users"
+CREATE POLICY "Users can view all profiles"
   ON users FOR SELECT
-  USING (
-    (SELECT role FROM users WHERE id = auth.uid() LIMIT 1) = 'admin'
-  );
+  USING (true);
 
--- Users UPDATE: 자신의 정보만 수정 가능
 CREATE POLICY "Users can update own profile"
   ON users FOR UPDATE
   USING (auth.uid() = id)
   WITH CHECK (auth.uid() = id);
 
--- ============================================
--- QUESTIONS 테이블 RLS 정책
--- ============================================
+-- QUESTIONS 테이블: 모든 사용자 조회 가능, 자신의 질문만 수정/삭제
+ALTER TABLE questions ENABLE ROW LEVEL SECURITY;
 
--- Questions SELECT: Member는 자신의 질문, Admin은 모든 질문
-CREATE POLICY "Members can view own questions"
+CREATE POLICY "Anyone can view questions"
   ON questions FOR SELECT
-  USING (
-    created_by = auth.uid()
-    OR (SELECT role FROM users WHERE id = auth.uid() LIMIT 1) = 'admin'
-  );
+  USING (true);
 
--- Questions INSERT: 로그인한 사용자는 자신의 질문 작성 가능
 CREATE POLICY "Users can create questions"
   ON questions FOR INSERT
-  WITH CHECK (
-    auth.uid() IS NOT NULL
-    AND created_by = auth.uid()
-  );
+  WITH CHECK (auth.uid() = created_by);
 
--- Questions UPDATE: 자신의 질문만 수정 가능 (답변이 없을 때만)
-CREATE POLICY "Users can update own questions without answers"
+CREATE POLICY "Users can update own questions"
   ON questions FOR UPDATE
-  USING (
-    created_by = auth.uid()
-    AND NOT EXISTS (
-      SELECT 1 FROM answers WHERE question_id = questions.id
-    )
-  )
-  WITH CHECK (
-    created_by = auth.uid()
-    AND NOT EXISTS (
-      SELECT 1 FROM answers WHERE question_id = questions.id
-    )
-  );
+  USING (auth.uid() = created_by)
+  WITH CHECK (auth.uid() = created_by);
 
--- Questions DELETE: Admin만 삭제 가능
-CREATE POLICY "Admin can delete any questions"
+CREATE POLICY "Users can delete own questions"
   ON questions FOR DELETE
-  USING (
-    (SELECT role FROM users WHERE id = auth.uid() LIMIT 1) = 'admin'
-  );
+  USING (auth.uid() = created_by);
 
--- ============================================
--- ANSWERS 테이블 RLS 정책
--- ============================================
+-- ANSWERS 테이블: 모든 사용자 조회 가능, 자신의 답변만 수정/삭제
+ALTER TABLE answers ENABLE ROW LEVEL SECURITY;
 
--- Answers SELECT: Member는 자신의 질문에 달린 답변, Admin은 모든 답변
-CREATE POLICY "Users can view answers for their questions"
+CREATE POLICY "Anyone can view answers"
   ON answers FOR SELECT
-  USING (
-    (SELECT created_by FROM questions WHERE id = question_id) = auth.uid()
-    OR (SELECT role FROM users WHERE id = auth.uid() LIMIT 1) = 'admin'
-  );
+  USING (true);
 
--- Answers INSERT: Admin만 답변 작성 가능
-CREATE POLICY "Admin can create answers"
+CREATE POLICY "Users can create answers"
   ON answers FOR INSERT
-  WITH CHECK (
-    auth.uid() IS NOT NULL
-    AND (SELECT role FROM users WHERE id = auth.uid() LIMIT 1) = 'admin'
-    AND created_by = auth.uid()
-  );
+  WITH CHECK (auth.uid() = created_by);
 
--- Answers UPDATE: Admin만 답변 수정 가능
-CREATE POLICY "Admin can update answers"
+CREATE POLICY "Users can update own answers"
   ON answers FOR UPDATE
-  USING (
-    (SELECT role FROM users WHERE id = auth.uid() LIMIT 1) = 'admin'
-  )
-  WITH CHECK (
-    (SELECT role FROM users WHERE id = auth.uid() LIMIT 1) = 'admin'
-  );
+  USING (auth.uid() = created_by)
+  WITH CHECK (auth.uid() = created_by);
 
--- Answers DELETE: Admin만 답변 삭제 가능
-CREATE POLICY "Admin can delete answers"
+CREATE POLICY "Users can delete own answers"
   ON answers FOR DELETE
-  USING (
-    (SELECT role FROM users WHERE id = auth.uid() LIMIT 1) = 'admin'
-  );
-
--- ============================================
--- 테스트용 더미 데이터 삽입 (선택사항)
--- ============================================
-
--- 사용자 생성 (Auth 없이 직접 insert - 테스트용)
--- INSERT INTO users (id, email, name, role) VALUES
--- ('user-member-1', 'member@example.com', '김회원', 'member'),
--- ('user-admin-1', 'admin@example.com', '관리자', 'admin');
+  USING (auth.uid() = created_by);
